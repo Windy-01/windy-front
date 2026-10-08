@@ -38,6 +38,14 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify static asset paths
+        run: |
+          if grep -Eq '((src|href)=")/assets/|href="/favicon' dist/index.html; then
+            echo "Build contains root-relative asset paths, which break project GitHub Pages sites."
+            cat dist/index.html
+            exit 1
+          fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
